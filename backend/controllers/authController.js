@@ -23,18 +23,19 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
 
     const accessToken = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ id: user.id, role: user.role }, process.env.REFRESH_TOKEN_SECRET);
+    console.log('User logged in successfully:', { username: user.username, role: user.role });
 
-    res.json({ accessToken, refreshToken, user }); 
+    res.json({ accessToken, refreshToken, user: { id: user.id, username: user.username, role: user.role } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.refreshToken = (req, res) => {
   const { token } = req.body;

@@ -8,7 +8,6 @@ const Login = () => {
     email: '',
     password: '',
   });
-
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -20,18 +19,18 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login(formData.email, formData.password);
-      console.log(response); 
+      // Store tokens securely, e.g., in HTTP-only cookies or secure storage
       localStorage.setItem('authToken', response.accessToken); 
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError('Login failed. Please check your credentials.');
     }
   };
 
   return (
     <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         <input
           type="email"
           name="email"
